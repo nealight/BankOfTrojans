@@ -11,13 +11,21 @@ def index():
 @main.route('/manage')
 @login_required
 def manage():
-    return render_template('manage.html', name=current_user.name)
+    action = request.args.get('action')
+    amount = request.args.get('amount')
+    if action and amount:
+        return manage_get()
+    return render_template('manage.html', balance=current_user.balance)
 
 @main.route('/manage', methods=['GET'])
 def manage_get():
     # login code goes here
-    email = request.args.get('email')
-    password = request.args.get('password')
+    action = request.args.get('action')
+    amount = request.args.get('amount')
+
+    if action == "deposit":
+        current_user.balance += float(amount)
+        db.session.commit()
 
 
     return redirect(url_for('main.manage'))
