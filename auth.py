@@ -10,17 +10,11 @@ auth = Blueprint('auth', __name__)
 
 @auth.route('/login')
 def login():
-    email = request.args.get('email')
-    password = request.args.get('password')
-    if email and password:
-        return login_post()
-    return render_template('login.html')
+    if len(request.args) == 0:
+        return render_template('login.html')
 
-@auth.route('/login', methods=['GET'])
-def login_post():
-    # login code goes here
-    email = request.args.get('email')
-    password = request.args.get('password')
+    email = request.args.get('user')
+    password = request.args.get('pass')
 
     user = User.query.filter_by(email=email).first()
 
@@ -36,19 +30,11 @@ def login_post():
 
 @auth.route('/signup')
 def signup():
-    email = request.args.get('email')
-    password = request.args.get('password')
+    if len(request.args) == 0:
+        return render_template('signup.html')
 
-    if email and password:
-        return signup_post()
-
-    return render_template('signup.html')
-
-@auth.route('/signup', methods=['GET'])
-def signup_post():
-    email = request.args.get('email')
-    name = request.args.get('name')
-    password = request.args.get('password')
+    email = request.args.get('user')
+    password = request.args.get('pass')
 
     user = User.query.filter_by(email=email).first() # if this returns a user, then the email already exists in database
 
