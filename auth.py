@@ -1,27 +1,53 @@
-from flask import Blueprint, render_template, redirect, url_for, request
+from flask import Blueprint, render_template, redirect, url_for, request, flash
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import login_user
 from models import User
 from __init__ import db
+from flask_login import login_user, logout_user, login_required
+
 auth = Blueprint('auth', __name__)
 
 
 @auth.route('/login')
 def login():
+    email = request.args.get('email')
+    password = request.args.get('password')
+    if email and password:
+        return login_post()
     return render_template('login.html')
+
+@auth.route('/login', methods=['GET'])
+def login_post():
+    # login code goes here
+    email = request.args.get('email')
+    password = request.args.get('password')
+
+    user = User.query.filter_by(email=email).first()
+
+    # check if the user actually exists
+    # take the user-supplied password, hash it, and compare it to the hashed password in the database
+    if not user or not check_password_hash(user.password, password):
+        flash('Please check your login details and try again.')
+        return redirect(url_for('auth.login'))  # if the user doesn't exist or password is wrong, reload the page
+
+    # if the above check passes, then we know the user has the right credentials
+    login_user(user, remember=True)
+    return redirect(url_for('main.manage'))
 
 @auth.route('/signup')
 def signup():
     return render_template('signup.html')
 
-@auth.route('/signup', methods=['POST'])
+@auth.route('/signup', methods=['GET'])
 def signup_post():
-    email = request.form.get('email')
-    name = request.form.get('name')
-    password = request.form.get('password')
+    email = request.args.get('email')
+    name = request.args.get('name')
+    password = request.args.get('password')
 
     user = User.query.filter_by(email=email).first() # if this returns a user, then the email already exists in database
 
     if user: # if a user is found, we want to redirect back to signup page so user can try again
+        flash('Email address already exists')
         return redirect(url_for('auth.signup'))
 
     # create a new user with the form data. Hash the password so the plaintext version isn't saved.
@@ -34,6 +60,10 @@ def signup_post():
     return redirect(url_for('auth.login'))
 
 @auth.route('/logout')
+@login_required
 def logout():
-    return 'Logout'
+    logout_user()
+    return redirect(url_for('main.index'))
+
+
 
