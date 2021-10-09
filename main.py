@@ -32,6 +32,7 @@ def manage():
         try:
             amount = float(amount)
             assert amount >= 0
+            assert current_user.balance >= amount
             current_user.balance -= amount
             db.session.commit()
         except:
