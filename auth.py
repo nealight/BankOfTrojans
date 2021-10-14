@@ -28,10 +28,10 @@ def login():
     login_user(user, remember=True)
     return redirect(url_for('main.manage'))
 
-@auth.route('/signup')
+@auth.route('/register')
 def signup():
     if len(request.args) == 0:
-        return render_template('signup.html')
+        return render_template('register.html')
 
     email = request.args.get('user')
     password = request.args.get('pass')
