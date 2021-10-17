@@ -26,7 +26,7 @@ def manage():
             current_user.balance += amount
             db.session.commit()
         except:
-            return redirect(url_for('main.manage'))
+            return render_template('manage.html', balance=current_user.balance)
 
     if action == "withdraw":
         try:
@@ -36,10 +36,7 @@ def manage():
             current_user.balance -= amount
             db.session.commit()
         except:
-            return redirect(url_for('main.manage'))
-
-    if action == "balance":
-            return redirect(url_for('main.manage'))
+            return render_template('manage.html', balance=current_user.balance)
 
     if action == "close":
         db.session.delete(current_user)
@@ -48,4 +45,4 @@ def manage():
         return redirect(url_for('main.index'))
 
 
-    return redirect(url_for('main.manage'))
+    return render_template('manage.html', balance=current_user.balance)
