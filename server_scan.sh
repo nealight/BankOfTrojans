@@ -35,3 +35,4 @@ do
 
 
 done < recon_server
+rm recon_server
