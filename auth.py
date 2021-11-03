@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, request, flash
+from flask import Blueprint, render_template, redirect, url_for, request, flash, Markup
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user
 from .models import User
@@ -16,11 +16,6 @@ def login():
 
     email = request.args.get('user')
     password = request.args.get('pass')
-
-    if request.args.get('reset'):
-        ResetManager.sendEmailForReset(email)
-        flash('Please check your email for instructions on resetting your password.')
-        return redirect(url_for('auth.login'))
 
     user = User.query.filter_by(email=email).first()
 
@@ -41,11 +36,17 @@ def signup():
 
     email = request.args.get('user')
     password = request.args.get('pass')
+    confirm_pass = request.args.get('confirm-pass')
 
     user = User.query.filter_by(email=email).first() # if this returns a user, then the email already exists in database
 
-    if user: # if a user is found, we want to redirect back to signup page so user can try again
-        flash('Email address already exists')
+    if user: # if a user is found, we want to redirect to login page
+        flash(Markup('Email address already exists. Go to <a href=\'login\'>login page</a>.'))
+        return redirect(url_for('auth.login'))
+
+    if password != confirm_pass:
+        flash('Passwords do not match.')
+        # return render_template('register.html')
         return redirect(url_for('auth.signup'))
 
     # create a new user with the form data. Hash the password so the plaintext version isn't saved.

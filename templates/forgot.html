@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="column is-4 is-offset-4">
-    <h3 class="title">Reset Password</h3>
+    <h3 class="title">Forgot Password</h3>
     <div class="box">
         {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -11,18 +11,15 @@
             </div>
         {% endif %}
         {% endwith %}
-        <form method="GET" action="/reset">
+        <div style="color: grey; margin-bottom: 10px">
+            Please provide your email below and we will send you a link to reset your password.
+        </div>
+        <form method="GET" action="/forgot">
             <div class="field">
                 <div class="control">
-                    <input class="input is-large" type="password" name="pass" placeholder="New Password">
+                    <input class="input is-large" type="email" name="user" placeholder="Username">
                 </div>
             </div>
-            <div class="field">
-                <div class="control">
-                    <input class="input is-large" type="password" name="confirm-pass" placeholder="Confirm Password">
-                </div>
-            </div>
-            <input type='hidden' name='email' value= '{{ email }}' />
             <button class="button is-block is-info is-large is-fullwidth">Reset Password</button>
         </form>
     </div>

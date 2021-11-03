@@ -3,6 +3,7 @@ from .__init__ import db
 from flask_login import login_required, current_user
 from flask_login import login_user, logout_user
 from .passwordReset import ResetManager
+from .models import User
 
 main = Blueprint('main', __name__)
 
@@ -56,10 +57,34 @@ def reset():
     else:
         email = request.args.get('email')
         password = request.args.get('pass')
+        confirm_pass = request.args.get('confirm-pass')
 
-        if ResetManager.resetPasswordForEmail(email=email, newPassword=password):
+        if password != confirm_pass:
+            flash('Passwords do not match.')
+            return render_template('reset.html', email=email)
+        elif ResetManager.resetPasswordForEmail(email=email, newPassword=password):
             flash('Successfully reset password.')
             return redirect(url_for('auth.login'))
         else:
             flash('Password reset was unsuccessful.')
             return redirect(url_for('main.reset'))
+
+@main.route('/forgot-password')
+def forgot_password():
+    return render_template('forgot.html')
+
+@main.route('/forgot')
+def forgot():
+    email = request.args.get('user')
+
+    user = User.query.filter_by(
+        email=email).first()  # if this returns a user, then the email already exists in database
+
+    if not user:
+        flash('No matching account found.')
+        return render_template('forgot.html')
+    else:
+        ResetManager.sendEmailForReset(email)
+        flash('Please check your email for instructions on resetting your password.')
+        return render_template('forgot.html')
+
