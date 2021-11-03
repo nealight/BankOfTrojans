@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, redirect, url_for, request, flash
 from .__init__ import db
 from flask_login import login_required, current_user
 from flask_login import login_user, logout_user
+from .passwordReset import ResetManager
 
 main = Blueprint('main', __name__)
 
@@ -46,3 +47,16 @@ def manage():
 
 
     return render_template('manage.html', balance=current_user.balance)
+
+@main.route('/reset')
+def reset():
+    if len(request.args) <= 1:
+        email = request.args.get('email')
+        return render_template('reset.html', email=email)
+    else:
+        email = request.args.get('email')
+        password = request.args.get('pass')
+
+        if ResetManager.resetPasswordForEmail(email=email, newPassword=password):
+            flash('Successfully reset password.')
+        return redirect(url_for('main.reset'))
