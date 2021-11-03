@@ -17,3 +17,17 @@ class ResetManager():
         os.system('echo "Please reset your email at:' + resetURL + '" | mail -s "Team 8 Bank Of Trojans Password Reset" ' + email)
         return True
 
+    def resetPasswordForEmail(email: str, newPassword: str) -> bool:
+        user = User.query.filter_by(email=email).first()
+
+        # Check if user does not exist
+        if not user:
+            return False
+
+        try:
+            user.password = newPassword
+            db.session.commit()
+        except:
+            return False
+
+        return True
