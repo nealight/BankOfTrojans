@@ -26,6 +26,7 @@ class ResetManager():
 
         try:
             user.password = newPassword
+            db.update(user)
             db.session.commit()
         except:
             return False
