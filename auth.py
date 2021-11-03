@@ -5,6 +5,7 @@ from .models import User
 from .__init__ import db
 from flask_login import login_user, logout_user, login_required
 from .passwordReset import ResetManager
+import re
 
 auth = Blueprint('auth', __name__)
 
@@ -43,6 +44,19 @@ def signup():
     if user: # if a user is found, we want to redirect to login page
         flash(Markup('Email address already exists. Go to <a href=\'login\'>login page</a>.'))
         return redirect(url_for('auth.login'))
+
+    # password validation with regex
+    # Minimum eight characters, at least one upper case English letter, one lower case English letter, one number and one special character
+    reg = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,}$"
+	# compiling regex
+    pat = re.compile(reg)
+	# searching regex				
+    mat = re.search(pat, password)
+	# validating conditions
+    if mat:
+        flash("Password is valid.")
+    else:
+        flash("Password invalid.")
 
     if password != confirm_pass:
         flash('Passwords do not match.')
