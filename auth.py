@@ -53,10 +53,9 @@ def signup():
 	# searching regex				
     mat = re.search(pat, password)
 	# validating conditions
-    if mat:
-        flash("Password is valid.")
-    else:
+    if not mat:
         flash("Password invalid.")
+        return redirect(url_for('auth.signup'))
 
     if password != confirm_pass:
         flash('Passwords do not match.')

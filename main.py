@@ -67,11 +67,9 @@ def reset():
 	    # searching regex				
         mat = re.search(pat, password)
 	    # validating conditions
-        if mat:
-            flash("Password is valid.")
-        else:
+        if not mat:
             flash("Password invalid.")
-
+            return render_template('reset.html', email=email)
 
         if password != confirm_pass:
             flash('Passwords do not match.')
