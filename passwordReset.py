@@ -1,6 +1,7 @@
 from .__init__ import db
 from .models import User
 import os
+from werkzeug.security import generate_password_hash
 
 class ResetManager():
     def __init__(self):
@@ -25,8 +26,7 @@ class ResetManager():
             return False
 
         try:
-            user.password = newPassword
-            db.update(user)
+            user.password = generate_password_hash(newPassword)
             db.session.commit()
         except:
             return False
