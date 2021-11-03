@@ -45,21 +45,22 @@ def signup():
         flash(Markup('Email address already exists. Go to <a href=\'login\'>login page</a>.'))
         return redirect(url_for('auth.login'))
 
+    if password != confirm_pass:
+        flash('Passwords do not match.')
+        # return render_template('register.html')
+        return redirect(url_for('auth.signup'))
+
     # password validation with regex
+
     # Minimum eight characters, at least one upper case English letter, one lower case English letter, one number and one special character
     reg = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,}$"
 	# compiling regex
     pat = re.compile(reg)
-	# searching regex				
+	# searching regex
     mat = re.search(pat, password)
 	# validating conditions
     if not mat:
         flash("Password invalid.")
-        return redirect(url_for('auth.signup'))
-
-    if password != confirm_pass:
-        flash('Passwords do not match.')
-        # return render_template('register.html')
         return redirect(url_for('auth.signup'))
 
     # create a new user with the form data. Hash the password so the plaintext version isn't saved.

@@ -59,22 +59,24 @@ def reset():
         email = request.args.get('email')
         password = request.args.get('pass')
         confirm_pass = request.args.get('confirm-pass')
+
+        if password != confirm_pass:
+            flash('Passwords do not match.')
+            return render_template('reset.html', email=email)
+
         # password validation with regex
         # Minimum eight characters, at least one upper case English letter, one lower case English letter, one number and one special character
         reg = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,}$"
 	    # compiling regex
         pat = re.compile(reg)
-	    # searching regex				
+	    # searching regex
         mat = re.search(pat, password)
 	    # validating conditions
         if not mat:
             flash("Password invalid.")
             return render_template('reset.html', email=email)
 
-        if password != confirm_pass:
-            flash('Passwords do not match.')
-            return render_template('reset.html', email=email)
-        elif ResetManager.resetPasswordForEmail(email=email, newPassword=password):
+        if ResetManager.resetPasswordForEmail(email=email, newPassword=password):
             flash('Successfully reset password.')
             return redirect(url_for('auth.login'))
         else:
