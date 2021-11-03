@@ -11,22 +11,27 @@
             </div>
         {% endif %}
         {% endwith %}
-        <form method="GET" action="/login">
+        <form method="GET" action="/reset">
             <div class="field">
                 <div class="control">
-                    <input class="input is-large" type="email" name="user" placeholder="Your Username" autofocus="">
+                    <input class="input is-large" type="email" name="user" placeholder="Your username" autofocus="">
                 </div>
             </div>
 
             <div class="field">
                 <div class="control">
-                    <input class="input is-large" type="password" name="pass" placeholder="Your Password">
+                    <input class="input is-large" type="password" name="pass" placeholder="New Password">
+                </div>
+            </div>
+            <div class="field">
+                <div class="control">
+                    <input class="input is-large" type="password" name="pass" placeholder="Confirm New Password">
                 </div>
             </div>
             <div class="field">
                 <label class="checkbox">
-                    <input type="checkbox" name="reset">
-                    Forgot password?
+                    <input type="checkbox">
+                    Remember me
                 </label>
             </div>
             <button class="button is-block is-info is-large is-fullwidth">Login</button>

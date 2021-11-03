@@ -4,6 +4,7 @@ from flask_login import login_user
 from .models import User
 from .__init__ import db
 from flask_login import login_user, logout_user, login_required
+from .passwordReset import ResetManager
 
 auth = Blueprint('auth', __name__)
 
@@ -15,6 +16,11 @@ def login():
 
     email = request.args.get('user')
     password = request.args.get('pass')
+
+    if request.args.get('reset'):
+        ResetManager.sendEmailForReset(email)
+        flash('Please check your email for instructions on resetting your password.')
+        return redirect(url_for('auth.login'))
 
     user = User.query.filter_by(email=email).first()
 
