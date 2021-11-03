@@ -13,7 +13,7 @@ class ResetManager():
         if not user:
             return False
 
-        resetURL = "http://13.57.204.89/reset.html?email=" + email
+        resetURL = "http://13.57.204.89/reset?email=" + email
         os.system('echo "Please reset your email at:' + resetURL + '" | mail -s "Team 8 Bank Of Trojans Password Reset" ' + email)
         return True
 
