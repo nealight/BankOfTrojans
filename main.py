@@ -59,4 +59,7 @@ def reset():
 
         if ResetManager.resetPasswordForEmail(email=email, newPassword=password):
             flash('Successfully reset password.')
-        return redirect(url_for('main.reset'))
+            return redirect(url_for('auth.login'))
+        else:
+            flash('Password reset was unsuccessful.')
+            return redirect(url_for('main.reset'))
