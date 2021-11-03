@@ -4,6 +4,7 @@ from flask_login import login_required, current_user
 from flask_login import login_user, logout_user
 from .passwordReset import ResetManager
 from .models import User
+import re
 
 main = Blueprint('main', __name__)
 
@@ -58,6 +59,19 @@ def reset():
         email = request.args.get('email')
         password = request.args.get('pass')
         confirm_pass = request.args.get('confirm-pass')
+        # password validation with regex
+        # Minimum eight characters, at least one upper case English letter, one lower case English letter, one number and one special character
+        reg = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,}$"
+	    # compiling regex
+        pat = re.compile(reg)
+	    # searching regex				
+        mat = re.search(pat, password)
+	    # validating conditions
+        if mat:
+            flash("Password is valid.")
+        else:
+            flash("Password invalid.")
+
 
         if password != confirm_pass:
             flash('Passwords do not match.')
