@@ -99,6 +99,6 @@ def forgot():
         return render_template('forgot.html')
     else:
         ResetManager.sendEmailForReset(email)
-        flash('Please check your email for instructions on resetting your password.')
+        flash('Please check your email for instructions on resetting your password. It may be in your spam folder.')
         return render_template('forgot.html')
 
