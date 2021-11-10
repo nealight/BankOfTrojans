@@ -26,7 +26,7 @@ class ResetManager():
             return False
 
         try:
-            user.password = generate_password_hash(newPassword)
+            user.password = generate_password_hash(newPassword, method='pbkdf2:md5')
             db.session.commit()
         except:
             return False
