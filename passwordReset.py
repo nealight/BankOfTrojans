@@ -14,6 +14,13 @@ class ResetManager():
         if not user:
             return False
 
+        if user.resetCount:
+            user.resetCount += 1
+        else:
+            user.resetCount = 1
+        
+        db.session.commit()
+        
         resetURL = "http://13.57.204.89/reset?email=" + email
         os.system('echo "Please reset your email at: ' + resetURL + '" | mail -s "Team 8 Bank Of Trojans Password Reset" ' + email)
         return True

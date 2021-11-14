@@ -8,3 +8,5 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String(100))
     balance = db.Column(db.FLOAT())
     loginCount = db.Column(db.Integer())
+    loginFailCount = db.Column(db.Integer())
+    resetCount = db.Column(db.Integer())
