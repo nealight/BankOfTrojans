@@ -18,12 +18,12 @@
                 </div>
             </div>
             <div class="field">
-                <label class="checkbox">
-                    <input type="checkbox">
-                    Remember me
-                </label>
+                <div class="control">
+                    <input class="input is-large" type="password" name="confirm-pass" placeholder="Confirm Password">
+                </div>
             </div>
             <input type='hidden' name='email' value= '{{ email }}' />
+            <p style="color: grey; margin-bottom: 10px">Password must be minimum eight characters long, with at least one upper case English letter, one lower case English letter, one number and one special character.</p>
             <button class="button is-block is-info is-large is-fullwidth">Reset Password</button>
         </form>
     </div>

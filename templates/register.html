@@ -7,23 +7,27 @@
         {% with messages = get_flashed_messages() %}
         {% if messages %}
             <div class="notification is-danger">
-                {{ messages[0] }}. Go to <a href="{{ url_for('auth.login') }}">login page</a>.
+                {{ messages[0] }}
             </div>
         {% endif %}
         {% endwith %}
         <form method="GET" action="/register">
             <div class="field">
                 <div class="control">
-                    <input class="input is-large" type="email" name="user" placeholder="Account Name" autofocus="">
+                    <input class="input is-large" type="email" name="user" placeholder="Username" autofocus="">
                 </div>
             </div>
-
             <div class="field">
                 <div class="control">
                     <input class="input is-large" type="password" name="pass" placeholder="Password">
                 </div>
             </div>
-
+            <div class="field">
+                <div class="control">
+                    <input class="input is-large" type="password" name="confirm-pass" placeholder="Confirm Password">
+                </div>
+            </div>
+            <p style="color: grey; margin-bottom: 10px">Password must be minimum eight characters long, with at least one upper case English letter, one lower case English letter, one number and one special character.</p>
             <button class="button is-block is-info is-large is-fullwidth">Sign Up</button>
         </form>
     </div>

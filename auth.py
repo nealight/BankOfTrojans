@@ -1,10 +1,11 @@
-from flask import Blueprint, render_template, redirect, url_for, request, flash
+from flask import Blueprint, render_template, redirect, url_for, request, flash, Markup
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user
 from .models import User
 from .__init__ import db
 from flask_login import login_user, logout_user, login_required
 from .passwordReset import ResetManager
+import re
 
 auth = Blueprint('auth', __name__)
 
@@ -17,11 +18,6 @@ def login():
     email = request.args.get('user')
     password = request.args.get('pass')
 
-    if request.args.get('reset'):
-        ResetManager.sendEmailForReset(email)
-        flash('Please check your email for instructions on resetting your password.')
-        return redirect(url_for('auth.login'))
-
     user = User.query.filter_by(email=email).first()
 
     # check if the user actually exists
@@ -31,13 +27,6 @@ def login():
         return redirect(url_for('auth.login'))  # if the user doesn't exist or password is wrong, reload the page
 
     # if the above check passes, then we know the user has the right credentials
-    if user.loginCount:
-        user.loginCount += 1
-    else:
-        user.loginCount = 1
-
-    db.session.commit()
-
     login_user(user, remember=True)
     return redirect(url_for('main.manage'))
 
@@ -48,15 +37,34 @@ def signup():
 
     email = request.args.get('user')
     password = request.args.get('pass')
+    confirm_pass = request.args.get('confirm-pass')
 
     user = User.query.filter_by(email=email).first() # if this returns a user, then the email already exists in database
 
-    if user: # if a user is found, we want to redirect back to signup page so user can try again
-        flash('Email address already exists')
+    if user: # if a user is found, we want to redirect to login page
+        flash(Markup('Email address already exists. Go to <a href=\'login\'>login page</a>.'))
+        return redirect(url_for('auth.login'))
+
+    if password != confirm_pass:
+        flash('Passwords do not match.')
+        # return render_template('register.html')
+        return redirect(url_for('auth.signup'))
+
+    # password validation with regex
+
+    # Minimum eight characters, at least one upper case English letter, one lower case English letter, one number and one special character
+    reg = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,}$"
+	# compiling regex
+    pat = re.compile(reg)
+	# searching regex
+    mat = re.search(pat, password)
+	# validating conditions
+    if not mat:
+        flash("Password invalid.")
         return redirect(url_for('auth.signup'))
 
     # create a new user with the form data. Hash the password so the plaintext version isn't saved.
-    new_user = User(email=email, balance=0.0, password=generate_password_hash(password, method='sha256'), loginCount=0)
+    new_user = User(email=email, balance=0.0, password=generate_password_hash(password, method='pbkdf2:md5'))
 
     # add the new user to the database
     db.session.add(new_user)
