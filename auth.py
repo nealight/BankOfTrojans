@@ -26,9 +26,18 @@ def login():
         flash('Please check your login details and try again.')
         return redirect(url_for('auth.login'))  # if the user doesn't exist or password is wrong, reload the page
 
+    if user.loginCount:
+        user.loginCount += 1
+    else:
+        user.loginCount = 1
+
+    db.session.commit()
+
     # if the above check passes, then we know the user has the right credentials
     login_user(user, remember=True)
     return redirect(url_for('main.manage'))
+
+
 
 @auth.route('/register')
 def signup():
