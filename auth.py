@@ -31,6 +31,13 @@ def login():
         return redirect(url_for('auth.login'))  # if the user doesn't exist or password is wrong, reload the page
 
     # if the above check passes, then we know the user has the right credentials
+    if user.loginCount:
+        user.loginCount += 1
+    else:
+        user.loginCount = 1
+
+    db.session.commit()
+
     login_user(user, remember=True)
     return redirect(url_for('main.manage'))
 
@@ -49,7 +56,7 @@ def signup():
         return redirect(url_for('auth.signup'))
 
     # create a new user with the form data. Hash the password so the plaintext version isn't saved.
-    new_user = User(email=email, balance=0.0, password=generate_password_hash(password, method='sha256'))
+    new_user = User(email=email, balance=0.0, password=generate_password_hash(password, method='sha256'), loginCount=0)
 
     # add the new user to the database
     db.session.add(new_user)
